@@ -1,0 +1,26 @@
+<.header>
+  Tag <%= @tag.id %>
+  <:subtitle>This is a tag record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/tag/#{@tag}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit tag</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Name"><%= @tag.name %></:item>
+</.list>
+
+<.back navigate={~p"/tag"}>Back to tag</.back>
+
+<.modal :if={@live_action == :edit} id="tag-modal" show on_cancel={JS.patch(~p"/tag/#{@tag}")}>
+  <.live_component
+    module={MarkkuWeb.TagLive.FormComponent}
+    id={@tag.id}
+    title={@page_title}
+    action={@live_action}
+    tag={@tag}
+    patch={~p"/tag/#{@tag}"}
+  />
+</.modal>

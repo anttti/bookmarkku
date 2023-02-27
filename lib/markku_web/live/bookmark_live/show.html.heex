@@ -1,0 +1,27 @@
+<.header>
+  Bookmark <%= @bookmark.id %>
+  <:subtitle>This is a bookmark record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/bookmark/#{@bookmark}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit bookmark</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Title"><%= @bookmark.title %></:item>
+  <:item title="Url"><%= @bookmark.url %></:item>
+</.list>
+
+<.back navigate={~p"/bookmark"}>Back to bookmark</.back>
+
+<.modal :if={@live_action == :edit} id="bookmark-modal" show on_cancel={JS.patch(~p"/bookmark/#{@bookmark}")}>
+  <.live_component
+    module={MarkkuWeb.BookmarkLive.FormComponent}
+    id={@bookmark.id}
+    title={@page_title}
+    action={@live_action}
+    bookmark={@bookmark}
+    patch={~p"/bookmark/#{@bookmark}"}
+  />
+</.modal>

@@ -1,0 +1,46 @@
+<.header>
+  Listing Tag
+  <:actions>
+    <.link patch={~p"/tag/new"}>
+      <.button>New Tag</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="tag"
+  rows={@streams.tag_collection}
+  row_click={fn {_id, tag} -> JS.navigate(~p"/tag/#{tag}") end}
+>
+  <:col :let={{_id, tag}} label="Name"><%= tag.name %></:col>
+  <:action :let={{_id, tag}}>
+    <div class="sr-only">
+      <.link navigate={~p"/tag/#{tag}"}>Show</.link>
+    </div>
+    <.link patch={~p"/tag/#{tag}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, tag}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: tag.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="tag-modal"
+  show
+  on_cancel={JS.navigate(~p"/tag")}
+>
+  <.live_component
+    module={MarkkuWeb.TagLive.FormComponent}
+    id={@tag.id || :new}
+    title={@page_title}
+    action={@live_action}
+    tag={@tag}
+    patch={~p"/tag"}
+  />
+</.modal>
