@@ -1,4 +1,4 @@
-# Markku
+# Bookmarkku
 
 A non-social bookmarking service.
 
