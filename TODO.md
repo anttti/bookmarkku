@@ -1,0 +1,10 @@
+- Pretty list page
+- Tagging support
+- Bookmarklet
+- Mailgun integration
+- PWA
+- Tag cloud
+- Favorites
+- Search
+- Private and public links
+- "Profile page" with public links
