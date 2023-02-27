@@ -19,7 +19,7 @@ defmodule MarkkuWeb.BookmarkLiveTest do
     test "lists all bookmark", %{conn: conn, bookmark: bookmark} do
       {:ok, _index_live, html} = live(conn, ~p"/bookmark")
 
-      assert html =~ "Listing Bookmark"
+      assert html =~ "Bookmarks"
       assert html =~ bookmark.title
     end
 

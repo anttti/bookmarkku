@@ -28,7 +28,7 @@ defmodule MarkkuWeb.BookmarkLive.Index do
 
   defp apply_action(socket, :index, _params) do
     socket
-    |> assign(:page_title, "Listing Bookmark")
+    |> assign(:page_title, "Bookmarks")
     |> assign(:bookmark, nil)
   end
 
