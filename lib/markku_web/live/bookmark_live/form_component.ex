@@ -2,6 +2,7 @@ defmodule MarkkuWeb.BookmarkLive.FormComponent do
   use MarkkuWeb, :live_component
 
   alias Markku.Bookmarks
+  alias Markku.Bookmarks.Fetcher
 
   @impl true
   def render(assigns) do
@@ -18,8 +19,15 @@ defmodule MarkkuWeb.BookmarkLive.FormComponent do
         phx-change="validate"
         phx-submit="save"
       >
+        <.input
+          field={@form[:url]}
+          type="text"
+          label="Url"
+          phx-blur="fetch_meta"
+          phx-target={@myself}
+        />
         <.input field={@form[:title]} type="text" label="Title" />
-        <.input field={@form[:url]} type="text" label="Url" />
+        <.input field={@form[:description]} type="text" label="Description" />
         <:actions>
           <.button phx-disable-with="Saving...">Save Bookmark</.button>
         </:actions>
@@ -36,6 +44,12 @@ defmodule MarkkuWeb.BookmarkLive.FormComponent do
      socket
      |> assign(assigns)
      |> assign_form(changeset)}
+  end
+
+  @impl true
+  def handle_event("fetch_meta", %{"value" => url}, socket) do
+    # TODO: Use Fetcher with Task.async to populate title and description (also show a spinner)
+    {:noreply, socket}
   end
 
   @impl true
