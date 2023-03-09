@@ -7,28 +7,13 @@
   </:actions>
 </.header>
 
-<.table
-  id="bookmark"
-  rows={@streams.bookmark_collection}
-  row_click={fn {_id, bookmark} -> JS.navigate(~p"/bookmark/#{bookmark}") end}
->
-  <:col :let={{_id, bookmark}} label="Title"><%= bookmark.title %></:col>
-  <:col :let={{_id, bookmark}} label="Url"><%= bookmark.url %></:col>
-  <:action :let={{_id, bookmark}}>
-    <div class="sr-only">
-      <.link navigate={~p"/bookmark/#{bookmark}"}>Show</.link>
-    </div>
-    <.link patch={~p"/bookmark/#{bookmark}/edit"}>Edit</.link>
-  </:action>
-  <:action :let={{id, bookmark}}>
-    <.link
-      phx-click={JS.push("delete", value: %{id: bookmark.id}) |> hide("##{id}")}
-      data-confirm="Are you sure?"
-    >
-      Delete
-    </.link>
-  </:action>
-</.table>
+<table>
+  <tbody id="bookmarks" phx-update="stream">
+    <tr :for={{dom_id, bookmark} <- @streams.bookmark_collection} id={dom_id}>
+      <td><a href={bookmark.url}><%= bookmark.title %></a></td>
+    </tr>
+  </tbody>
+</table>
 
 <.modal
   :if={@live_action in [:new, :edit]}
