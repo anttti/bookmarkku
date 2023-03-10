@@ -8,15 +8,10 @@ defmodule Markku.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      # Start the Telemetry supervisor
       MarkkuWeb.Telemetry,
-      # Start the Ecto repository
       Markku.Repo,
-      # Start the PubSub system
       {Phoenix.PubSub, name: Markku.PubSub},
-      # Start Finch
       {Finch, name: Markku.Finch},
-      # Start the Endpoint (http/https)
       MarkkuWeb.Endpoint
       # Start a worker by calling: Markku.Worker.start_link(arg)
       # {Markku.Worker, arg}

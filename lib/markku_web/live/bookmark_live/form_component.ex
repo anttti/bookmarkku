@@ -2,7 +2,6 @@ defmodule MarkkuWeb.BookmarkLive.FormComponent do
   use MarkkuWeb, :live_component
 
   alias Markku.Bookmarks
-  alias Markku.Bookmarks.Fetcher
 
   @impl true
   def render(assigns) do
@@ -11,6 +10,8 @@ defmodule MarkkuWeb.BookmarkLive.FormComponent do
       <.header>
         <%= @title %>
       </.header>
+
+      <h1><%= if @loading?, do: "loading", else: "idle" %></h1>
 
       <.simple_form
         for={@form}
@@ -26,6 +27,9 @@ defmodule MarkkuWeb.BookmarkLive.FormComponent do
           phx-blur="fetch_meta"
           phx-target={@myself}
         />
+        <div>
+          <%= @form.params["title"] %>
+        </div>
         <.input field={@form[:title]} type="text" label="Title" />
         <.input field={@form[:description]} type="text" label="Description" />
         <:actions>
@@ -39,6 +43,7 @@ defmodule MarkkuWeb.BookmarkLive.FormComponent do
   @impl true
   def update(%{bookmark: bookmark} = assigns, socket) do
     changeset = Bookmarks.change_bookmark(bookmark)
+    assigns = Map.put(assigns, :loading?, false)
 
     {:ok,
      socket
@@ -48,8 +53,13 @@ defmodule MarkkuWeb.BookmarkLive.FormComponent do
 
   @impl true
   def handle_event("fetch_meta", %{"value" => url}, socket) do
-    # TODO: Use Fetcher with Task.async to populate title and description (also show a spinner)
-    {:noreply, socket}
+    task_ref =
+      Task.async(fn ->
+        # Fetcher.fetch_title(url)
+        url
+      end)
+
+    {:noreply, socket |> assign(loading?: true, task_ref: task_ref)}
   end
 
   @impl true
@@ -64,6 +74,15 @@ defmodule MarkkuWeb.BookmarkLive.FormComponent do
 
   def handle_event("save", %{"bookmark" => bookmark_params}, socket) do
     save_bookmark(socket, socket.assigns.action, bookmark_params)
+  end
+
+  def handle_info({ref, result}, %{assigns: %{task_ref: ref}} = socket) do
+    Process.demonitor(ref, [:flush])
+    IO.puts("RESULT")
+    IO.inspect(result)
+    # [title, description] = result
+    # {:noreply, assign(socket, loading?: false, title: title, description: description)}
+    {:noreply, assign(socket, loading?: false)}
   end
 
   defp save_bookmark(socket, :edit, bookmark_params) do

@@ -21,12 +21,36 @@
   show
   on_cancel={JS.navigate(~p"/bookmark")}
 >
-  <.live_component
+  <div>
+    <h1><%= if @loading?, do: "loading", else: "idle" %></h1>
+    <div>
+      <%= @form.params["title"] %>
+    </div>
+    <div>
+      <%= @form.params["description"] %>
+    </div>
+    <.simple_form
+      for={@form}
+      id="bookmark-form"
+      phx-change="validate"
+      phx-submit="save"
+      phx-hook="BookmarkForm"
+    >
+      <.input field={@form[:url]} type="text" label="Url" phx-blur="fetch_meta" />
+      <.input id="title" field={@form[:title]} type="text" label="Title" />
+      <.input id="description" field={@form[:description]} type="text" label="Description" />
+      <:actions>
+        <.button phx-disable-with="Saving...">Save Bookmark</.button>
+      </:actions>
+    </.simple_form>
+  </div>
+
+  <%!-- <.live_component
     module={MarkkuWeb.BookmarkLive.FormComponent}
     id={@bookmark.id || :new}
     title={@page_title}
     action={@live_action}
     bookmark={@bookmark}
     patch={~p"/bookmark"}
-  />
+  /> --%>
 </.modal>
