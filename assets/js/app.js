@@ -36,11 +36,6 @@ Hooks.BookmarkForm = {
   },
 };
 
-// window.addEventListener("phx:fetched", (e) => {
-//   document.querySelector("input#title").value = e.detail.title
-//   document.querySelector("input#description").value = e.detail.description
-// });
-
 let liveSocket = new LiveSocket("/live", Socket, {
   params: { _csrf_token: csrfToken },
   hooks: Hooks,

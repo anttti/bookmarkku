@@ -11,7 +11,7 @@ defmodule MarkkuWeb.BookmarkLive.Index do
 
     {:ok,
      socket
-     |> assign(loading?: false)
+     |> assign(loading?: false, inputs_disabled?: true)
      |> assign_form(changeset)
      |> stream(:bookmark_collection, Bookmarks.list_bookmark())}
   end
@@ -38,12 +38,20 @@ defmodule MarkkuWeb.BookmarkLive.Index do
         Fetcher.fetch_title(url)
       end)
 
-    {:noreply, socket |> assign(loading?: true, task_ref: task_ref)}
+    {:noreply, socket |> assign(loading?: true, inputs_disabled?: true, task_ref: task_ref)}
   end
 
   @impl true
   def handle_event("save", %{"bookmark" => bookmark_params}, socket) do
     save_bookmark(socket, socket.assigns.action, bookmark_params)
+  end
+
+  @impl true
+  def handle_event("delete", %{"id" => id}, socket) do
+    bookmark = Bookmarks.get_bookmark!(id)
+    {:ok, _} = Bookmarks.delete_bookmark(bookmark)
+
+    {:noreply, stream_delete(socket, :bookmark_collection, bookmark)}
   end
 
   @impl true
@@ -59,7 +67,7 @@ defmodule MarkkuWeb.BookmarkLive.Index do
       })
 
     {:noreply,
-     assign(socket, loading?: false)
+     assign(socket, loading?: false, inputs_disabled?: false)
      |> assign_form(changeset)
      |> push_event("fetched", %{title: title, description: description})}
   end
@@ -94,19 +102,6 @@ defmodule MarkkuWeb.BookmarkLive.Index do
     socket
     |> assign(:page_title, "Bookmarks")
     |> assign(:bookmark, nil)
-  end
-
-  # @impl true
-  # def handle_info({MarkkuWeb.BookmarkLive.FormComponent, {:saved, bookmark}}, socket) do
-  #   {:noreply, stream_insert(socket, :bookmark_collection, bookmark)}
-  # end
-
-  @impl true
-  def handle_event("delete", %{"id" => id}, socket) do
-    bookmark = Bookmarks.get_bookmark!(id)
-    {:ok, _} = Bookmarks.delete_bookmark(bookmark)
-
-    {:noreply, stream_delete(socket, :bookmark_collection, bookmark)}
   end
 
   defp assign_form(socket, %Ecto.Changeset{} = changeset) do
