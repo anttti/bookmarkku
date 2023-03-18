@@ -13,3 +13,5 @@
 - Search
 - Private and public links
 - "Profile page" with public links
+- Tests
+- Github Actions deploy https://fly.io/docs/app-guides/continuous-deployment-with-github-actions/
