@@ -1,11 +1,13 @@
 defmodule MarkkuWeb.AddLive do
-  use MarkkuWeb, :live_view
+  use MarkkuWeb, :bare_live_view
 
   alias Markku.Bookmarks
   alias Markku.Bookmarks.Bookmark
 
   def mount(params, _session, socket) do
+    # TODO: Auth
     changeset = Bookmarks.change_bookmark(%Bookmark{}, params)
+
     {:ok, assign(socket, page_title: "Add bookmark", form: to_form(changeset))}
   end
 

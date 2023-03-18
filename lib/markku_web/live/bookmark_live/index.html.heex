@@ -1,19 +1,32 @@
-<.header>
-  Bookmarks
-  <:actions>
-    <.link patch={~p"/bookmark/new"}>
-      <.button>New Bookmark</.button>
-    </.link>
-  </:actions>
-</.header>
+<.link patch={~p"/bookmark/new"} class="absolute right-4 top-16">
+  <.button>New Bookmark</.button>
+</.link>
 
-<table>
-  <tbody id="bookmarks" phx-update="stream">
-    <tr :for={{dom_id, bookmark} <- @streams.bookmark_collection} id={dom_id}>
-      <td><a href={bookmark.url}><%= bookmark.title %></a></td>
-    </tr>
-  </tbody>
-</table>
+<ul id="bookmarks" phx-update="stream" class="flex flex-col">
+  <li
+    :for={{dom_id, bookmark} <- @streams.bookmark_collection}
+    id={dom_id}
+    class="-mx-4 px-4 py-2 rounded-lg hover:bg-slate-100"
+  >
+    <a href={bookmark.url}>
+      <div class="font-semibold"><%= bookmark.title %></div>
+      <span class="block text-sm leading-snug text-slate-600"><%= bookmark.description %></span>
+    </a>
+  </li>
+</ul>
+
+<section class="mt-8 -mx-4 p-4 flex justify-between items-center bg-slate-100 rounded-lg">
+  <div>
+    <h2 class="font-bold">A faster way to bookmark!</h2>
+    <p class="mb-2 text-sm">Drag the bookmarklet to your bookmarks bar.</p>
+  </div>
+  <a
+    class="bg-slate-300 px-3 py-1 rounded-full text-sm font-bold"
+    href="javascript:q=location.href;if(document.getSelection)%7Bd=document.getSelection();%7Delse%7Bd='';%7D;p=document.title;void(open('http://localhost:4000/add?url='+encodeURIComponent(q)+'&description='+encodeURIComponent(d)+'&title='+encodeURIComponent(p),'Markku','toolbar=no,width=700,height=350'));"
+  >
+    Bookmark
+  </a>
+</section>
 
 <.modal
   :if={@live_action in [:new, :edit]}
