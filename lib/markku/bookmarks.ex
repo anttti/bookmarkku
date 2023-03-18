@@ -18,7 +18,7 @@ defmodule Markku.Bookmarks do
 
   """
   def list_bookmark do
-    query = from Bookmark, order_by: [desc: :unread, desc: :inserted_at]
+    query = from Bookmark, order_by: [desc: :unread, desc: :inserted_at], preload: [:tags]
     Repo.all(query)
   end
 
