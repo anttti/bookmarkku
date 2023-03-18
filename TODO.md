@@ -1,6 +1,11 @@
-- Pretty list page
+- Deleting bookmarks
+- Editing bookmarks
+- Auth check to LiveViews
+- Timestamps to list view
+- Read/unread support (incl. filtering to list view)
+- Pagination
 - Tagging support
-- Bookmarklet
+- Favicons?
 - Mailgun integration
 - PWA
 - Tag cloud
