@@ -11,7 +11,11 @@ defmodule MarkkuWeb.BookmarkLive.Index do
 
     {:ok,
      socket
-     |> assign(loading?: false, inputs_disabled?: true)
+     |> assign(
+       loading?: false,
+       inputs_disabled?: true,
+       server_url: Application.get_env(:markku, :server_url)
+     )
      |> assign_form(changeset)
      |> stream(:bookmark_collection, Bookmarks.list_bookmark())}
   end
@@ -62,8 +66,14 @@ defmodule MarkkuWeb.BookmarkLive.Index do
   end
 
   @impl true
+  def handle_event("mark-read", %{"id" => id}, socket) do
+    {:ok, bookmark} = Bookmarks.mark_unread(id, false)
+    {:noreply, stream_insert(socket, :bookmark_collection, bookmark)}
+  end
+
+  @impl true
   def handle_event("mark-unread", %{"id" => id}, socket) do
-    {:ok, bookmark} = Bookmarks.mark_read(id)
+    {:ok, bookmark} = Bookmarks.mark_unread(id, true)
     {:noreply, stream_insert(socket, :bookmark_collection, bookmark)}
   end
 

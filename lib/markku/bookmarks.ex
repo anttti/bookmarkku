@@ -103,8 +103,8 @@ defmodule Markku.Bookmarks do
     Bookmark.changeset(bookmark, attrs)
   end
 
-  def mark_read(id) do
-    get_bookmark!(id) |> update_bookmark(%{unread: false})
+  def mark_unread(id, unread) do
+    get_bookmark!(id) |> update_bookmark(%{unread: unread})
   end
 
   alias Markku.Bookmarks.Tag

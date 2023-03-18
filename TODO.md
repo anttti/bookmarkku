@@ -1,4 +1,5 @@
 - Deleting bookmarks
+- Archiving bookmarks
 - Editing bookmarks
 - Auth check to LiveViews
 - Timestamps to list view
@@ -7,6 +8,7 @@
 - The concept of inbox
   - Untagged entries
 - Archive after clicking a bookmark?
+- Mark unread
 - Favicons?
 - Mailgun integration
 - PWA
