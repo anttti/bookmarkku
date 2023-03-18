@@ -6,16 +6,19 @@
   <li
     :for={{dom_id, bookmark} <- @streams.bookmark_collection}
     id={dom_id}
-    class="-mx-4 px-4 py-2 rounded-lg hover:bg-slate-100"
+    class="-mx-6 px-6 py-2 rounded-lg relative hover:bg-slate-100"
   >
-    <a href={bookmark.url}>
+    <div :if={bookmark.unread} class="absolute top-4 left-2 w-2 h-2 rounded-full bg-blue-400">
+      <span class="sr-only">Unread</span>
+    </div>
+    <a href={bookmark.url} phx-click="mark-unread" phx-value-id={bookmark.id}>
       <div class="font-semibold"><%= bookmark.title %></div>
       <span class="block text-sm leading-snug text-slate-600"><%= bookmark.description %></span>
     </a>
   </li>
 </ul>
 
-<section class="mt-8 -mx-4 p-4 flex justify-between items-center bg-slate-100 rounded-lg">
+<section class="mt-8 -mx-6 p-6 flex justify-between items-center bg-slate-100 rounded-lg">
   <div>
     <h2 class="font-bold">A faster way to bookmark!</h2>
     <p class="mb-2 text-sm">Drag the bookmarklet to your bookmarks bar.</p>

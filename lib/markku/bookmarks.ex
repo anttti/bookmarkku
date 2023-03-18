@@ -18,7 +18,8 @@ defmodule Markku.Bookmarks do
 
   """
   def list_bookmark do
-    Repo.all(Bookmark)
+    query = from Bookmark, order_by: [desc: :unread, desc: :inserted_at]
+    Repo.all(query)
   end
 
   @doc """
@@ -100,6 +101,10 @@ defmodule Markku.Bookmarks do
   """
   def change_bookmark(%Bookmark{} = bookmark, attrs \\ %{}) do
     Bookmark.changeset(bookmark, attrs)
+  end
+
+  def mark_read(id) do
+    get_bookmark!(id) |> update_bookmark(%{unread: false})
   end
 
   alias Markku.Bookmarks.Tag

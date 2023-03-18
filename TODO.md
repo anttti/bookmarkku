@@ -2,9 +2,11 @@
 - Editing bookmarks
 - Auth check to LiveViews
 - Timestamps to list view
-- Read/unread support (incl. filtering to list view)
 - Pagination
 - Tagging support
+- The concept of inbox
+  - Untagged entries
+- Archive after clicking a bookmark?
 - Favicons?
 - Mailgun integration
 - PWA

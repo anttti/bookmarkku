@@ -62,6 +62,12 @@ defmodule MarkkuWeb.BookmarkLive.Index do
   end
 
   @impl true
+  def handle_event("mark-unread", %{"id" => id}, socket) do
+    {:ok, bookmark} = Bookmarks.mark_read(id)
+    {:noreply, stream_insert(socket, :bookmark_collection, bookmark)}
+  end
+
+  @impl true
   def handle_info({ref, [title, description]}, socket) do
     Process.demonitor(ref, [:flush])
 
