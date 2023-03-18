@@ -15,6 +15,25 @@ defmodule MarkkuWeb.CoreComponents do
   import MarkkuWeb.Gettext
 
   @doc """
+  Renders a link.
+  """
+  attr :href, :string, required: true
+  attr :method, :string, default: "get"
+
+  slot :inner_block, required: true
+
+  def a(assigns) do
+    ~H"""
+    <.link
+      href={@href}
+      class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700 hover:underline"
+    >
+      <%= render_slot(@inner_block) %>
+    </.link>
+    """
+  end
+
+  @doc """
   Renders a modal.
 
   ## Examples
