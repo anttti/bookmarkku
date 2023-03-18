@@ -25,7 +25,7 @@
   </div>
   <a
     class="bg-slate-300 px-3 py-1 rounded-full text-sm font-bold"
-    href="javascript:q=location.href;if(document.getSelection)%7Bd=document.getSelection();%7Delse%7Bd='';%7D;p=document.title;void(open('http://localhost:4000/add?url='+encodeURIComponent(q)+'&description='+encodeURIComponent(d)+'&title='+encodeURIComponent(p),'Markku','toolbar=no,width=700,height=350'));"
+    href={"javascript:q=location.href;if(document.getSelection)%7Bd=document.getSelection();%7Delse%7Bd='';%7D;p=document.title;void(open('#{@server_url}/add?url='+encodeURIComponent(q)+'&description='+encodeURIComponent(d)+'&title='+encodeURIComponent(p),'Markku','toolbar=no,width=700,height=350'));"}
   >
     Bookmark
   </a>
