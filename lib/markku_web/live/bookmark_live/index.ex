@@ -50,7 +50,7 @@ defmodule MarkkuWeb.BookmarkLive.Index do
 
   @impl true
   def handle_event("save", %{"bookmark" => bookmark_params}, socket) do
-    save_bookmark(socket, socket.assigns.action, bookmark_params)
+    save_bookmark(socket, bookmark_params)
   end
 
   @impl true
@@ -79,14 +79,14 @@ defmodule MarkkuWeb.BookmarkLive.Index do
      |> push_event("fetched", %{title: title, description: description})}
   end
 
-  defp save_bookmark(socket, :new, bookmark_params) do
+  defp save_bookmark(socket, bookmark_params) do
     case Bookmarks.create_bookmark(bookmark_params) do
       {:ok, bookmark} ->
         {:noreply,
          socket
          |> stream_insert(:bookmark_collection, bookmark)
          |> put_flash(:info, "Bookmark created successfully")
-         |> push_patch(to: socket.assigns.patch)}
+         |> push_patch(to: ~p"/bookmark")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign_form(socket, changeset)}
