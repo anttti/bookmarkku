@@ -32,6 +32,13 @@ defmodule MarkkuWeb.BookmarkLive.Index do
   end
 
   @impl true
+  def handle_event("fetch_meta", %{"value" => ""}, socket) do
+    # Don't do any fetching when value is "". This happens once every time
+    # the live view opens
+    {:noreply, socket}
+  end
+
+  @impl true
   def handle_event("fetch_meta", %{"value" => url}, socket) do
     task_ref =
       Task.async(fn ->

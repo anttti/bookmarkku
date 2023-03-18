@@ -29,7 +29,13 @@
       phx-submit="save"
       phx-hook="BookmarkForm"
     >
-      <.input field={@form[:url]} type="text" label="Url" phx-blur="fetch_meta" />
+      <.input
+        field={@form[:url]}
+        type="text"
+        label="Url"
+        phx-blur="fetch_meta"
+        autocomplete="off"
+      />
       <.input
         id="title"
         disabled={@inputs_disabled?}
