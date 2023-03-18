@@ -15,7 +15,7 @@ defmodule MarkkuWeb.UserSessionController do
   end
 
   def create(conn, params) do
-    create(conn, params, "Welcome back!")
+    create(conn, params, nil)
   end
 
   defp create(conn, %{"user" => user_params}, info) do
@@ -23,7 +23,7 @@ defmodule MarkkuWeb.UserSessionController do
 
     if user = Accounts.get_user_by_email_and_password(email, password) do
       conn
-      |> put_flash(:info, info)
+      |> create_flash(:info, info)
       |> UserAuth.log_in_user(user, user_params)
     else
       # In order to prevent user enumeration attacks, don't disclose whether the email is registered.
@@ -34,9 +34,16 @@ defmodule MarkkuWeb.UserSessionController do
     end
   end
 
+  defp create_flash(conn, level, message) when is_binary(message) do
+    put_flash(conn, level, message)
+  end
+
+  defp create_flash(conn, _, _) do
+    conn
+  end
+
   def delete(conn, _params) do
     conn
-    |> put_flash(:info, "Logged out successfully.")
     |> UserAuth.log_out_user()
   end
 end
