@@ -17,6 +17,6 @@ defmodule Markku.Bookmarks.Bookmark do
     bookmark
     |> cast(attrs, [:title, :url, :description, :unread])
     # |> cast_assoc(:tags, required: true)
-    |> validate_required([:title, :url, :description, :unread])
+    |> validate_required([:title, :url, :unread])
   end
 end
