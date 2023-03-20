@@ -50,9 +50,9 @@ defmodule Markku.Bookmarks do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_bookmark(attrs \\ %{}) do
+  def create_bookmark(attrs, tags) do
     %Bookmark{}
-    |> Bookmark.changeset(attrs)
+    |> Bookmark.create_changeset(attrs, tags)
     |> Repo.insert()
   end
 
@@ -104,7 +104,9 @@ defmodule Markku.Bookmarks do
   end
 
   def mark_unread(id, unread) do
-    get_bookmark!(id) |> update_bookmark(%{unread: unread})
+    {:ok, bookmark} = get_bookmark!(id) |> update_bookmark(%{unread: unread})
+
+    Repo.preload(bookmark, :tags)
   end
 
   alias Markku.Bookmarks.Tag
@@ -122,6 +124,15 @@ defmodule Markku.Bookmarks do
     Repo.all(Tag)
   end
 
+  def search_tags(term) do
+    query =
+      from t in Tag,
+        where: ilike(t.name, ^"%#{String.replace(term, "%", "\\%")}%"),
+        order_by: [asc: :name]
+
+    Repo.all(query)
+  end
+
   @doc """
   Gets a single tag.
 
@@ -137,6 +148,11 @@ defmodule Markku.Bookmarks do
 
   """
   def get_tag!(id), do: Repo.get!(Tag, id)
+
+  def get_tags(ids) do
+    query = from t in Tag, where: t.id in ^ids
+    Repo.all(query)
+  end
 
   @doc """
   Creates a tag.
