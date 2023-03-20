@@ -21,18 +21,21 @@ import "phoenix_html";
 import { Socket } from "phoenix";
 import { LiveSocket } from "phoenix_live_view";
 import topbar from "../vendor/topbar";
+import liveSelect from "live_select";
 
 let csrfToken = document
   .querySelector("meta[name='csrf-token']")
   .getAttribute("content");
 
-let Hooks = {};
-Hooks.BookmarkForm = {
-  mounted() {
-    this.handleEvent("fetched", ({ title, description }) => {
-      this.el.querySelector("input#title").value = title;
-      this.el.querySelector("input#description").value = description;
-    });
+let Hooks = {
+  ...liveSelect,
+  BookmarkForm: {
+    mounted() {
+      this.handleEvent("fetched", ({ title, description }) => {
+        this.el.querySelector("input#title").value = title;
+        this.el.querySelector("input#description").value = description;
+      });
+    },
   },
 };
 

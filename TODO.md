@@ -1,3 +1,4 @@
+- Owner to bookmarks
 - Deleting bookmarks
 - Archiving bookmarks
 - Editing bookmarks
@@ -13,6 +14,7 @@
 - Mailgun integration
 - PWA
 - Tag cloud
+- Read later, whatever that means
 - Favorites
 - Search
 - Private and public links

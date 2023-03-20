@@ -1,13 +1,15 @@
 defmodule MarkkuWeb.BookmarkLive.Index do
   use MarkkuWeb, :live_view
 
+  import LiveSelect
+
   alias Markku.Bookmarks
   alias Markku.Bookmarks.Bookmark
   alias Markku.Bookmarks.Fetcher
 
   @impl true
   def mount(_params, _session, socket) do
-    changeset = Bookmarks.change_bookmark(%Bookmark{})
+    changeset = Bookmarks.change_bookmark(%Bookmark{tags: []})
 
     {:ok,
      socket
@@ -67,14 +69,26 @@ defmodule MarkkuWeb.BookmarkLive.Index do
 
   @impl true
   def handle_event("mark-read", %{"id" => id}, socket) do
-    {:ok, bookmark} = Bookmarks.mark_unread(id, false)
+    bookmark = Bookmarks.mark_unread(id, false)
     {:noreply, stream_insert(socket, :bookmark_collection, bookmark)}
   end
 
   @impl true
   def handle_event("mark-unread", %{"id" => id}, socket) do
-    {:ok, bookmark} = Bookmarks.mark_unread(id, true)
+    bookmark = Bookmarks.mark_unread(id, true)
     {:noreply, stream_insert(socket, :bookmark_collection, bookmark)}
+  end
+
+  @impl true
+  def handle_event("live_select_change", %{"text" => text, "id" => live_select_id}, socket) do
+    options = Markku.Bookmarks.search_tags(text)
+
+    send_update(LiveSelect.Component,
+      id: live_select_id,
+      options: Enum.map(options, fn o -> {o.name, o.id} end)
+    )
+
+    {:noreply, socket}
   end
 
   @impl true
@@ -96,15 +110,21 @@ defmodule MarkkuWeb.BookmarkLive.Index do
   end
 
   defp save_bookmark(socket, bookmark_params) do
-    case Bookmarks.create_bookmark(bookmark_params) do
+    # TODO: Create possible new tags
+    tags = Markku.Bookmarks.get_tags(bookmark_params["tags_search"])
+    bookmark_params = Map.put(bookmark_params, "unread", true)
+
+    case Bookmarks.create_bookmark(bookmark_params, tags) do
       {:ok, bookmark} ->
         {:noreply,
          socket
-         |> stream_insert(:bookmark_collection, bookmark)
+         |> stream_insert(:bookmark_collection, bookmark, at: 0)
          |> put_flash(:info, "Bookmark created successfully")
          |> push_patch(to: ~p"/bookmark")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
+        IO.inspect("Error!")
+        IO.inspect(changeset)
         {:noreply, assign_form(socket, changeset)}
     end
   end

@@ -16,7 +16,14 @@ defmodule Markku.Bookmarks.Bookmark do
   def changeset(bookmark, attrs) do
     bookmark
     |> cast(attrs, [:title, :url, :description, :unread])
-    # |> cast_assoc(:tags, required: true)
+    |> validate_required([:title, :url, :unread])
+  end
+
+  @doc false
+  def create_changeset(bookmark, attrs, tags) do
+    bookmark
+    |> cast(attrs, [:title, :url, :description, :unread])
+    |> put_assoc(:tags, tags)
     |> validate_required([:title, :url, :unread])
   end
 end

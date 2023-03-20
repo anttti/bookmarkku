@@ -74,7 +74,7 @@
         type="text"
         label="Description"
       />
-      <%!-- <.live_select form={@form} field={:tags} /> --%>
+      <.live_select form={@form} field={:tags_search} mode={:tags} user_defined_options={true} />
       <:actions>
         <.button phx-disable-with="Saving...">Save Bookmark</.button>
       </:actions>
