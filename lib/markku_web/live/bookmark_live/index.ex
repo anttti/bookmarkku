@@ -109,12 +109,24 @@ defmodule MarkkuWeb.BookmarkLive.Index do
      |> push_event("fetched", %{title: title, description: description})}
   end
 
+  defp get_tag({:ok, tag}), do: [tag]
+  defp get_tag(_), do: []
+
   defp save_bookmark(socket, bookmark_params) do
-    # TODO: Create possible new tags
-    tags = Markku.Bookmarks.get_tags(bookmark_params["tags_search"])
+    existing_tag_ids =
+      Enum.filter(bookmark_params["tags_search"], fn id -> String.match?(id, ~r/^\d+$/) end)
+
+    new_tags =
+      Enum.filter(bookmark_params["tags_search"], fn id -> !String.match?(id, ~r/^\d+$/) end)
+
+    new_tags =
+      Enum.map(new_tags, fn name -> Markku.Bookmarks.create_tag(%{"name" => name}) end)
+      |> Enum.flat_map(&get_tag/1)
+
+    existing_tags = Markku.Bookmarks.get_tags(existing_tag_ids)
     bookmark_params = Map.put(bookmark_params, "unread", true)
 
-    case Bookmarks.create_bookmark(bookmark_params, tags) do
+    case Bookmarks.create_bookmark(bookmark_params, existing_tags ++ new_tags) do
       {:ok, bookmark} ->
         {:noreply,
          socket
