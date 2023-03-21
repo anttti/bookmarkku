@@ -624,6 +624,19 @@ defmodule MarkkuWeb.CoreComponents do
     """
   end
 
+  @doc """
+  Renders a tag pill.
+  """
+  slot :inner_block, required: true
+
+  def tag(assigns) do
+    ~H"""
+    <span class="uppercase font-bold tracking-wider rounded-full bg-pink-100 text-pink-500 px-2 py-1 text-xs transition duration-200 ease-in-out">
+      <%= render_slot(@inner_block) %>
+    </span>
+    """
+  end
+
   ## JS Commands
 
   def show(js \\ %JS{}, selector) do
