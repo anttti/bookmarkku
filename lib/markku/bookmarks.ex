@@ -26,17 +26,10 @@ defmodule Markku.Bookmarks do
   Gets a single bookmark.
 
   Raises `Ecto.NoResultsError` if the Bookmark does not exist.
-
-  ## Examples
-
-      iex> get_bookmark!(123)
-      %Bookmark{}
-
-      iex> get_bookmark!(456)
-      ** (Ecto.NoResultsError)
-
   """
-  def get_bookmark!(id), do: Repo.get!(Bookmark, id)
+  def get_bookmark!(%User{} = user, id) do
+    Repo.get_by!(Bookmark, id: id, user_id: user.id)
+  end
 
   @doc """
   Creates a bookmark.
@@ -103,8 +96,8 @@ defmodule Markku.Bookmarks do
     Bookmark.changeset(bookmark, attrs)
   end
 
-  def mark_unread(id, unread) do
-    {:ok, bookmark} = get_bookmark!(id) |> update_bookmark(%{unread: unread})
+  def mark_unread(%User{} = user, id, unread) do
+    {:ok, bookmark} = get_bookmark!(user.id, id) |> update_bookmark(%{unread: unread})
 
     Repo.preload(bookmark, :tags)
   end
@@ -218,4 +211,28 @@ defmodule Markku.Bookmarks do
   def change_tag(%Tag{} = tag, attrs \\ %{}) do
     Tag.changeset(tag, attrs)
   end
+
+  @doc """
+  Gets or creates a list of tags.
+
+  ## Examples
+
+      iex> get_or_create_tags([1, 2, "new-tag"])
+      [%Tag{}]
+  """
+  def get_or_create_tags(tags) do
+    existing_tags =
+      Enum.filter(tags, fn id -> String.match?(id, ~r/^\d+$/) end)
+      |> Markku.Bookmarks.get_tags()
+
+    new_tags =
+      Enum.filter(tags, fn id -> !String.match?(id, ~r/^\d+$/) end)
+      |> Enum.map(fn name -> Markku.Bookmarks.create_tag(%{"name" => name}) end)
+      |> Enum.flat_map(&get_tag/1)
+
+    existing_tags ++ new_tags
+  end
+
+  defp get_tag({:ok, tag}), do: [tag]
+  defp get_tag(_), do: []
 end

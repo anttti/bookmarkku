@@ -63,7 +63,7 @@ defmodule MarkkuWeb.BookmarkLive.Index do
 
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
-    bookmark = Bookmarks.get_bookmark!(id)
+    bookmark = Bookmarks.get_bookmark!(socket.assigns.current_user, id)
     {:ok, _} = Bookmarks.delete_bookmark(bookmark)
 
     {:noreply, stream_delete(socket, :bookmark_collection, bookmark)}
@@ -71,13 +71,13 @@ defmodule MarkkuWeb.BookmarkLive.Index do
 
   @impl true
   def handle_event("mark-read", %{"id" => id}, socket) do
-    bookmark = Bookmarks.mark_unread(id, false)
+    bookmark = Bookmarks.mark_unread(socket.assigns.current_user, id, false)
     {:noreply, stream_insert(socket, :bookmark_collection, bookmark)}
   end
 
   @impl true
   def handle_event("mark-unread", %{"id" => id}, socket) do
-    bookmark = Bookmarks.mark_unread(id, true)
+    bookmark = Bookmarks.mark_unread(socket.assigns.current_user, id, true)
     {:noreply, stream_insert(socket, :bookmark_collection, bookmark)}
   end
 
@@ -111,25 +111,15 @@ defmodule MarkkuWeb.BookmarkLive.Index do
      |> push_event("fetched", %{title: title, description: description})}
   end
 
-  defp get_tag({:ok, tag}), do: [tag]
-  defp get_tag(_), do: []
-
   defp save_bookmark(socket, bookmark_params) do
-    # Existing tags come back as the DB IDs, new tags come back as strings (in the same list)
-    existing_tags =
-      Enum.filter(bookmark_params["tags_search"], fn id -> String.match?(id, ~r/^\d+$/) end)
-      |> Markku.Bookmarks.get_tags()
-
-    new_tags =
-      Enum.filter(bookmark_params["tags_search"], fn id -> !String.match?(id, ~r/^\d+$/) end)
-      |> Enum.map(fn name -> Markku.Bookmarks.create_tag(%{"name" => name}) end)
-      |> Enum.flat_map(&get_tag/1)
-
     bookmark_params =
       Map.put(bookmark_params, "unread", true)
       |> Map.put("user_id", socket.assigns.current_user.id)
 
-    case Bookmarks.create_bookmark(bookmark_params, existing_tags ++ new_tags) do
+    tags = Bookmarks.get_or_create_tags(bookmark_params["tags_search"])
+    IO.inspect(tags)
+
+    case Bookmarks.create_bookmark(bookmark_params, tags) do
       {:ok, bookmark} ->
         {:noreply,
          socket
@@ -147,7 +137,7 @@ defmodule MarkkuWeb.BookmarkLive.Index do
   defp apply_action(socket, :edit, %{"id" => id}) do
     socket
     |> assign(:page_title, "Edit Bookmark")
-    |> assign(:bookmark, Bookmarks.get_bookmark!(id))
+    |> assign(:bookmark, Bookmarks.get_bookmark!(socket.assigns.current_user, id))
   end
 
   defp apply_action(socket, :new, _params) do

@@ -1,3 +1,4 @@
+- Prevent the creation of identical tags
 - Owner to tags
 - Deleting bookmarks
 - Archiving bookmarks
