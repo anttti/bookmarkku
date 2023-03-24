@@ -8,6 +8,7 @@ defmodule Markku.Bookmarks.Bookmark do
     field :description, :string
     field :unread, :boolean
     many_to_many :tags, Markku.Bookmarks.Tag, join_through: "bookmark_tags"
+    belongs_to :user, Markku.Accounts.User
 
     timestamps()
   end
@@ -22,8 +23,8 @@ defmodule Markku.Bookmarks.Bookmark do
   @doc false
   def create_changeset(bookmark, attrs, tags) do
     bookmark
-    |> cast(attrs, [:title, :url, :description, :unread])
+    |> cast(attrs, [:title, :url, :description, :unread, :user_id])
     |> put_assoc(:tags, tags)
-    |> validate_required([:title, :url, :unread])
+    |> validate_required([:title, :url, :unread, :user_id])
   end
 end

@@ -7,6 +7,8 @@ defmodule MarkkuWeb.BookmarkLive.Index do
   alias Markku.Bookmarks.Bookmark
   alias Markku.Bookmarks.Fetcher
 
+  on_mount Markku.UserLiveAuth
+
   @impl true
   def mount(_params, _session, socket) do
     changeset = Bookmarks.change_bookmark(%Bookmark{tags: []})
@@ -19,7 +21,7 @@ defmodule MarkkuWeb.BookmarkLive.Index do
        server_url: Application.get_env(:markku, :server_url)
      )
      |> assign_form(changeset)
-     |> stream(:bookmark_collection, Bookmarks.list_bookmark())}
+     |> stream(:bookmark_collection, Bookmarks.list_bookmark(socket.assigns.current_user))}
   end
 
   @impl true
@@ -113,18 +115,19 @@ defmodule MarkkuWeb.BookmarkLive.Index do
   defp get_tag(_), do: []
 
   defp save_bookmark(socket, bookmark_params) do
-    existing_tag_ids =
+    # Existing tags come back as the DB IDs, new tags come back as strings (in the same list)
+    existing_tags =
       Enum.filter(bookmark_params["tags_search"], fn id -> String.match?(id, ~r/^\d+$/) end)
+      |> Markku.Bookmarks.get_tags()
 
     new_tags =
       Enum.filter(bookmark_params["tags_search"], fn id -> !String.match?(id, ~r/^\d+$/) end)
-
-    new_tags =
-      Enum.map(new_tags, fn name -> Markku.Bookmarks.create_tag(%{"name" => name}) end)
+      |> Enum.map(fn name -> Markku.Bookmarks.create_tag(%{"name" => name}) end)
       |> Enum.flat_map(&get_tag/1)
 
-    existing_tags = Markku.Bookmarks.get_tags(existing_tag_ids)
-    bookmark_params = Map.put(bookmark_params, "unread", true)
+    bookmark_params =
+      Map.put(bookmark_params, "unread", true)
+      |> Map.put("user_id", socket.assigns.current_user.id)
 
     case Bookmarks.create_bookmark(bookmark_params, existing_tags ++ new_tags) do
       {:ok, bookmark} ->

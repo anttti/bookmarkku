@@ -1,4 +1,4 @@
-- Owner to bookmarks
+- Owner to tags
 - Deleting bookmarks
 - Archiving bookmarks
 - Editing bookmarks

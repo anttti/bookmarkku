@@ -10,11 +10,12 @@
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
 
-Markku.Repo.insert!(%Markku.Accounts.User{
-  email: "test@test.com",
-  hashed_password: Bcrypt.hash_pwd_salt("test"),
-  confirmed_at: ~N[2021-01-01 00:00:00]
-})
+user =
+  Markku.Repo.insert!(%Markku.Accounts.User{
+    email: "test@test.com",
+    hashed_password: Bcrypt.hash_pwd_salt("test"),
+    confirmed_at: ~N[2021-01-01 00:00:00]
+  })
 
 tag_dev =
   Markku.Repo.insert!(%Markku.Bookmarks.Tag{
@@ -43,7 +44,8 @@ verge =
     description:
       "The Verge is about technology and how it makes us feel. Founded in 2011, we offer our audience everything from breaking news to reviews to award-winning features and investigations, on our site, in video, and in podcasts.",
     unread: true,
-    tags: [tag_tech, tag_media]
+    tags: [tag_tech, tag_media],
+    user: user
   })
 
 mtv =
@@ -53,7 +55,8 @@ mtv =
     description:
       "Suomen suosituimmat viihdeohjelmat ja kuumimmat puheenaiheet. Parasta aikaa MTV Katsomossa!",
     unread: true,
-    tags: [tag_media]
+    tags: [tag_media],
+    user: user
   })
 
 fly =
@@ -62,5 +65,6 @@ fly =
     url: "https://fly.io",
     description: "",
     unread: true,
-    tags: [tag_dev, tag_tech, tag_saas]
+    tags: [tag_dev, tag_tech, tag_saas],
+    user: user
   })

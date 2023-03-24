@@ -6,19 +6,19 @@ defmodule Markku.Bookmarks do
   import Ecto.Query, warn: false
   alias Markku.Repo
 
+  alias Markku.Accounts.User
   alias Markku.Bookmarks.Bookmark
 
   @doc """
-  Returns the list of bookmark.
-
-  ## Examples
-
-      iex> list_bookmark()
-      [%Bookmark{}, ...]
-
+  Returns the list of bookmarks for a given user.
   """
-  def list_bookmark do
-    query = from Bookmark, order_by: [desc: :unread, desc: :inserted_at], preload: [:tags]
+  def list_bookmark(%User{} = user) do
+    query =
+      from b in Bookmark,
+        order_by: [desc: :unread, desc: :inserted_at],
+        preload: [:tags],
+        where: b.user_id == ^user.id
+
     Repo.all(query)
   end
 
