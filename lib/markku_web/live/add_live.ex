@@ -4,8 +4,9 @@ defmodule MarkkuWeb.AddLive do
   alias Markku.Bookmarks
   alias Markku.Bookmarks.Bookmark
 
+  on_mount Markku.UserLiveAuth
+
   def mount(params, _session, socket) do
-    # TODO: Auth
     changeset = Bookmarks.change_bookmark(%Bookmark{}, params)
 
     {:ok, assign(socket, page_title: "Add bookmark", form: to_form(changeset))}
@@ -25,7 +26,7 @@ defmodule MarkkuWeb.AddLive do
   end
 
   def handle_event("save", %{"bookmark" => bookmark_params}, socket) do
-    case Bookmarks.create_bookmark(bookmark_params) do
+    case Bookmarks.create_bookmark(socket.assigns.current_user, bookmark_params) do
       {:ok, _} ->
         {:noreply,
          socket

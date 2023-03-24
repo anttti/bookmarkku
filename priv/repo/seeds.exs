@@ -19,22 +19,26 @@ user =
 
 tag_dev =
   Markku.Repo.insert!(%Markku.Bookmarks.Tag{
-    name: "Development"
+    name: "Development",
+    user: user
   })
 
 tag_tech =
   Markku.Repo.insert!(%Markku.Bookmarks.Tag{
-    name: "Tech"
+    name: "Tech",
+    user: user
   })
 
 tag_media =
   Markku.Repo.insert!(%Markku.Bookmarks.Tag{
-    name: "Media"
+    name: "Media",
+    user: user
   })
 
 tag_saas =
   Markku.Repo.insert!(%Markku.Bookmarks.Tag{
-    name: "SaaS"
+    name: "SaaS",
+    user: user
   })
 
 verge =

@@ -83,7 +83,7 @@ defmodule MarkkuWeb.BookmarkLive.Index do
 
   @impl true
   def handle_event("live_select_change", %{"text" => text, "id" => live_select_id}, socket) do
-    options = Markku.Bookmarks.search_tags(text)
+    options = Markku.Bookmarks.search_tags(socket.assigns.current_user, text)
 
     send_update(LiveSelect.Component,
       id: live_select_id,
@@ -116,7 +116,9 @@ defmodule MarkkuWeb.BookmarkLive.Index do
       Map.put(bookmark_params, "unread", true)
       |> Map.put("user_id", socket.assigns.current_user.id)
 
-    tags = Bookmarks.get_or_create_tags(bookmark_params["tags_search"])
+    tags =
+      Bookmarks.get_or_create_tags(socket.assigns.current_user, bookmark_params["tags_search"])
+
     IO.inspect(tags)
 
     case Bookmarks.create_bookmark(bookmark_params, tags) do

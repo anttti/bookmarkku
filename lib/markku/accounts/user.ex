@@ -8,6 +8,7 @@ defmodule Markku.Accounts.User do
     field :hashed_password, :string, redact: true
     field :confirmed_at, :naive_datetime
     has_many :bookmarks, Markku.Bookmarks.Bookmark
+    has_many :tags, Markku.Bookmarks.Tag
 
     timestamps()
   end

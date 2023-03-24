@@ -4,6 +4,7 @@ defmodule Markku.Bookmarks.Tag do
 
   schema "tags" do
     field :name, :string
+    belongs_to :user, Markku.Accounts.User
 
     timestamps()
   end
@@ -11,7 +12,7 @@ defmodule Markku.Bookmarks.Tag do
   @doc false
   def changeset(tag, attrs) do
     tag
-    |> cast(attrs, [:name])
-    |> validate_required([:name])
+    |> cast(attrs, [:name, :user_id])
+    |> validate_required([:name, :user_id])
   end
 end

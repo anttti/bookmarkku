@@ -105,22 +105,22 @@ defmodule Markku.Bookmarks do
   alias Markku.Bookmarks.Tag
 
   @doc """
-  Returns the list of tag.
-
-  ## Examples
-
-      iex> list_tag()
-      [%Tag{}, ...]
-
+  Returns all tags for a given user.
   """
-  def list_tag do
-    Repo.all(Tag)
+  def list_tag(%User{} = user) do
+    query =
+      from t in Tag,
+        order_by: [asc: :name],
+        where: t.user_id == ^user.id
+
+    Repo.all(query)
   end
 
-  def search_tags(term) do
+  def search_tags(%User{} = user, term) do
     query =
       from t in Tag,
         where: ilike(t.name, ^"%#{String.replace(term, "%", "\\%")}%"),
+        where: t.user_id == ^user.id,
         order_by: [asc: :name]
 
     Repo.all(query)
@@ -220,14 +220,16 @@ defmodule Markku.Bookmarks do
       iex> get_or_create_tags([1, 2, "new-tag"])
       [%Tag{}]
   """
-  def get_or_create_tags(tags) do
+  def get_or_create_tags(%User{} = user, tags) do
     existing_tags =
       Enum.filter(tags, fn id -> String.match?(id, ~r/^\d+$/) end)
       |> Markku.Bookmarks.get_tags()
 
     new_tags =
       Enum.filter(tags, fn id -> !String.match?(id, ~r/^\d+$/) end)
-      |> Enum.map(fn name -> Markku.Bookmarks.create_tag(%{"name" => name}) end)
+      |> Enum.map(fn name ->
+        Markku.Bookmarks.create_tag(%{"name" => name, "user_id" => user.id})
+      end)
       |> Enum.flat_map(&get_tag/1)
 
     existing_tags ++ new_tags
