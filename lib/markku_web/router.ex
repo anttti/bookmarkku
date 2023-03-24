@@ -73,13 +73,6 @@ defmodule MarkkuWeb.Router do
 
       live "/bookmark", BookmarkLive.Index, :index
       live "/bookmark/new", BookmarkLive.Index, :new
-
-      live "/tag", TagLive.Index, :index
-      live "/tag/new", TagLive.Index, :new
-      live "/tag/:id/edit", TagLive.Index, :edit
-
-      live "/tag/:id", TagLive.Show, :show
-      live "/tag/:id/show/edit", TagLive.Show, :edit
     end
   end
 
