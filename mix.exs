@@ -33,7 +33,7 @@ defmodule Markku.MixProject do
   defp deps do
     [
       {:bcrypt_elixir, "~> 3.0"},
-      {:phoenix, "~> 1.7.1"},
+      {:phoenix, "~> 1.7.2"},
       {:phoenix_ecto, "~> 4.4"},
       {:ecto_sql, "~> 3.6"},
       {:postgrex, ">= 0.0.0"},
@@ -51,8 +51,8 @@ defmodule Markku.MixProject do
       {:gettext, "~> 0.20"},
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.6.1"},
-      {:finch, "~> 0.14.0"},
-      {:live_select, "~> 1.0.1"}
+      {:finch, "~> 0.15.0"},
+      {:live_select, "~> 1.0.2"}
     ]
   end
 
