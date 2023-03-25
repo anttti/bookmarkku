@@ -12,3 +12,7 @@ Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 ## Deploying to production
 
 `fly deploy`
+
+## Connecting to prod DB
+
+`fly postgres connect -a bookmarkku-db`
