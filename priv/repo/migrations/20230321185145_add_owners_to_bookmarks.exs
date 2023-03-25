@@ -5,7 +5,7 @@ defmodule Markku.Repo.Migrations.AddOwnersToBookmarks do
     execute "DELETE FROM bookmarks"
 
     alter table(:bookmarks) do
-      add :user_id, references(:users), null: false
+      add :user_id, references(:users, on_delete: :delete_all), null: false
     end
   end
 end

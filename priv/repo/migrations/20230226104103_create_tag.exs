@@ -9,8 +9,8 @@ defmodule Markku.Repo.Migrations.CreateTag do
     end
 
     create table(:bookmark_tags, primary_key: false) do
-      add :bookmark_id, references(:bookmarks)
-      add :tag_id, references(:tags)
+      add :bookmark_id, references(:bookmarks, on_delete: :delete_all)
+      add :tag_id, references(:tags, on_delete: :delete_all)
     end
   end
 end
