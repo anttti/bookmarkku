@@ -1,5 +1,4 @@
 - Prevent the creation of identical tags
-- Owner to tags
 - Deleting bookmarks
 - Archiving bookmarks
 - Editing bookmarks
@@ -21,4 +20,5 @@
 - Private and public links
 - "Profile page" with public links
 - Tests
+- Statistics
 - Github Actions deploy https://fly.io/docs/app-guides/continuous-deployment-with-github-actions/
